@@ -4,23 +4,23 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-// require('../controllers/greetings.php');
+// dependencias
 require __DIR__ . '/../vendor/autoload.php';
+
+
 
 $app = AppFactory::create();
 
 
-// app - function get (ruta, function)
-$app->get('/hello/{name}/{apellido}', function (Request $request, Response $response, $args) {
+// $app->addBodyParsingMiddleware();
+// importaciones
 
-    $name = $args["name"];
-    $apellido = $args["apellido"];
-    $response->getBody()->write("Hello world $name $apellido!");
-    return $response;
-});
- 
+require __DIR__ . '/../src/routes.php';
 
-$app->get('/', function (Request $request, Response $response, $args) {
+
+// routes 
+
+$app->get('/', function(Request $request, Response $response, $args) {
     $response->getBody()->write("Root!");
     return $response;
 });
