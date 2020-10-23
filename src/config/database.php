@@ -1,8 +1,6 @@
 <?php
 
-
-
-class db{
+class Db{
     private $host = 'localhost';
     private $dbUser = 'root';
     private $password = '1234';
@@ -14,9 +12,7 @@ class db{
     }
 
     public function connect(){
-        $conn = new PDO($this->getPath() , $this->dbUser, $this->password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERR_MODE_EXCEPTION);
-        return $conn;
+        return new PDO($this->getPath() , $this->dbUser, $this->password);
     }
 
 
