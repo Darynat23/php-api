@@ -16,7 +16,6 @@ class Usuario
 
 class UsuarioDao
 {
-    private $db;
 
     private function row_to_user($row)
     {
@@ -50,8 +49,7 @@ class UsuarioDao
             $user = $this->row_to_user($row);
             return $user;
         } catch (Exception  $e) {
-            $state = False;
-            return NULL;
+            return False;
         }
     }
 
@@ -63,14 +61,11 @@ class UsuarioDao
         try {
             $conn = $db->connect();
             // ejecutar la consulta y recibir el estado 
-
-
             $row = $conn->query($sql)->fetch();
             $user = $this->row_to_user($row);
             return $user;
         } catch (Exception  $e) {
-            $state = False;
-            return NULL;
+            return False;
         }
     }
 
@@ -88,7 +83,7 @@ class UsuarioDao
         try {
             $conn = $db->connect();
             // ejecutar la consulta y recibir el estado 
-            $state = $conn->prepare($sql)->execute([
+            $conn->prepare($sql)->execute([
                 $user->nombre_usuario,
                 $user->clave,
                 $user->nombres,
@@ -98,8 +93,7 @@ class UsuarioDao
             $user->idusuario = $conn->lastInsertId();
             return $user;
         } catch (Exception  $e) {
-            $state = False;
-            return NULL;
+            return False;
         }
     }
 
@@ -114,7 +108,7 @@ class UsuarioDao
         try {
             $conn = $db->connect();
             // ejecutar la consulta y recibir el estado 
-            $state = $conn->prepare($sql)->execute(
+            $conn->prepare($sql)->execute(
                 [
                     $user->nombre_usuario,
                     $user->clave,
@@ -124,8 +118,7 @@ class UsuarioDao
             $user->idusuario = $conn->lastInsertId();
             return $user;
         } catch (Exception  $e) {
-            $state = False;
-            return NULL;
+            return False;
         }
     }
 
