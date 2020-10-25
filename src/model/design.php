@@ -2,24 +2,26 @@
 
 // require __DIR__ . '../../config/database.php';
 // data transport Object.
+/*
+{
+    "id_design":"",
+    "nombre_prenda":"pantalon",
+    "descripcion":"largo y azul",
+    "costo":10000,
+    "tiempo_creacion":"35:50",  
+    "estado":"pendiente",
+    "fecha_creacion":"12/10/20",
+    }
+*/
 class Design {
     public $id_design;
     public $nombre_prenda;
-    
-
-    public function get_id_design(){
-        return $this->id_design;
-    }
-    public function get_nombre_prenda(){
-        return $this->nombre_prenda;
-    }
-
-    public function set_id_design($id_design){
-        $this->idusuario = $id_design;
-    }
-    public function set_nombre_usuario($nombre_prenda){
-        $this->nombre_usuario =$nombre_prenda ;
-    } 
+    public $descripcion;
+    public $costo;
+    public $tiempo_creacion;
+    public $estado;
+    public $fecha_creacion;
+    public $id_user;
 }
 
 
@@ -28,44 +30,91 @@ class Design {
 class DesignDao{
     private $db;
 
-    public function buscar($id_design){
-      return "buscando usuario $id_design->get_id_design()";
+    private function row_to_design($row){
+        $design = new Design();
+        $design->id_design =$row['iddisenio'];
+        $design->nombre_prenda =$row['nombre'];
+        $design->descripcion =$row['descripcion'];
+        $design->costo =$row['costos'];
+        $design->tiempo_creacion =$row['tiempo_creacion'];
+        $design->estado =$row['estado'];
+        $design->fecha_creacion =$row['fecha_creacion'];
+        $design->id_user =$row['id_usuario'];
+        return $design;
     }
 
-    public function guardar($design){
-        $design_name = $design->get_nombre_prenda();
+    public function buscar($id){
         $db = new Db();
-       
-        // dao guardar en base de datos 
-            // conectarse a la base datos
-
-                try{
-                    $conn = $db->connect();
-                }catch(PDOException  $e){
-                    $state = False;
-                }
-                
-            // tener la consulta SQL que guarda
-                $sql = 'INSERT INTO natkandlo.disenio (nombre_prenda)
-                VALUES (?,?);';
-    
+        $sql = "SELECT * FROM natkandlo.disenio
+        WHERE id_usuario = $id;";
+        try{
+            $conn = $db->connect();
             // ejecutar la consulta y recibir el estado 
-                $state = $conn->prepare($sql)->execute([$design_name]);
-            
-            //retornar el estado.
-
-            if (state){
-                $design->set_idusuario($conn->lastInsertId());
-                return $design;
-            }else{
-                return NULL;
+            $row = $conn->query($sql)->fetchAll();
+            $designs = [];
+            foreach ($row as $design_array) {
+                $design = $this->row_to_design($design_array);
+                array_push($designs, $design);
             }
+            return $designs;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
+    }
 
-        // cliente       -  usuario->flutter 
-        //------------------------------------
-        // recepcion     -  controller     - UserController  - userController.php
-        // moto caja     -  dto  - datos   -  Usuario        - usuario.php
-        // domiciliario  -  dao            - this -          - usuario.php
+    public function buscar_iddisenio($id){
+        $db = new Db();
+        $sql = "SELECT * FROM natkandlo.disenio
+        WHERE iddisenio = $id;";
+        try{
+            $conn = $db->connect();
+            $row = $conn->query($sql)->fetch();
+            $design = $this->row_to_design($row);
+            return $design;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
+    }
+
+
+    public function guardar($design){
+        $db = new Db();
+        // tener la consulta SQL que guarda
+
+        
+        
+        $sql = 'INSERT INTO natkandlo.disenio (
+            nombre,
+            descripcion,
+            costos,
+            tiempo_creacion,
+            estado,
+            fecha_creacion,
+            id_usuario
+            )
+        VALUES (?,?,?,?,?,?,?);';
+        try{
+            // conectarse a la base datos
+            $conn = $db->connect();
+            // dao guardar en base de datos 
+        
+            $state = $conn->prepare($sql)->execute([
+                $design->nombre_prenda,
+                $design->descripcion,
+                $design->costo,
+                $design->tiempo_creacion,
+                $design->estado,
+                $design->fecha_creacion,
+                $design->id_user
+            ]);
+            $design->id_design = $conn->lastInsertId();
+            return $design;
+        }catch(PDOException  $e){
+            $state = False;
+            return NULL;
+        }
     }
 
     public function actualizar(){

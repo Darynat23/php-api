@@ -5,73 +5,95 @@
 class Usuario {
     public $idusuario;
     public $nombre_usuario;
-    private $clave;
-    
-
-    public function get_idusuario(){
-        return $this->idusuario;
-    }
-    public function get_nombre_usuario(){
-        return $this->nombre_usuario;
-    }
-
-    public function get_clave(){
-        return $this->clave;
-    }
-
-    public function set_idusuario($idusuario){
-        $this->idusuario = $idusuario;
-    }
-    public function set_nombre_usuario($nombre_usuario){
-        $this->nombre_usuario =$nombre_usuario ;
-    }
-
-    public function set_clave($clave){
-         $this->clave = $clave;
-    }
+    public $apellido;
+    public $correo;
+    public $clave;
  
 }
-
 
 // data access Object.
 
 class UsuarioDao{
     private $db;
+    public function login($user){
+        
+        $db = new Db();
+        $sql = "SELECT * FROM natkandlo.usuarios
+        WHERE 
+            nombre_usuario = '$user->nombre_usuario' AND
+            clave = $user->clave
+            ;";
+        try{
+            $conn = $db->connect();
+            // ejecutar la consulta y recibir el estado 
+            
+            $row = $conn->query($sql)->fetch();
 
-    public function buscar($usuario){
-      return "buscando usuario $usuario->get_id_usuario()";
+            if($row['idusuario']==NULL){
+                return NULL;
+            }
+            $user = new Usuario();
+            $user->idusuario=$row['idusuario'];
+            $user->nombre_usuario=$row['nombre_usuario'];
+            $user->apellido =$row['apellido'] ;
+            $user->correo= $row['correo'];
+            $user->clave=$row['clave'];
+            return $user;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
+    }
+
+    public function buscar($id){
+        $db = new Db();
+        $sql = "SELECT * FROM natkandlo.usuarios
+        WHERE idusuario = $id;";
+        try{
+            $conn = $db->connect();
+            // ejecutar la consulta y recibir el estado 
+            
+
+            $row = $conn->query($sql)->fetch();
+            $user = new Usuario();
+            $user->idusuario=$row['idusuario'];
+            $user->nombre_usuario=$row['nombre_usuario'];
+            $user->apellido =$row['apellido'] ;
+            $user->correo= $row['correo'];
+            $user->clave=$row['clave'];
+            return $user;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
     }
 
     public function guardar($user){
-        $username = $user->get_nombre_usuario();
-        $password = $user->get_clave();
+        $username = $user->nombre_usuario;
+        $password = $user->clave;
+        $lastname = $user->apellido;
+        $email = $user->correo;
         $db = new Db();
        
         // dao guardar en base de datos 
             // conectarse a la base datos
 
-                try{
-                    $conn = $db->connect();
-                }catch(PDOException  $e){
-                    $state = False;
-                }
-                
-            // tener la consulta SQL que guarda
-                $sql = 'INSERT INTO natkandlo.usuarios (nombre_usuario,clave)
-                VALUES (?,?);';
-    
+             // tener la consulta SQL que guarda
+        $sql = 'INSERT INTO natkandlo.usuarios (nombre_usuario,clave,apellidos,email)
+        VALUES (?,?,?,?);';
+        try{
+            $conn = $db->connect();
             // ejecutar la consulta y recibir el estado 
-                $state = $conn->prepare($sql)->execute([$username , $password]);
-            
+            $state = $conn->prepare($sql)->execute([$username,$password,$lastname,$email]);
+            $user->idusuario=$conn->lastInsertId();
+            return $user;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
+                
             //retornar el estado.
-
-            if (state){
-                $user->set_idusuario($conn->lastInsertId());
-                return $user;
-            }else{
-                return NULL;
-            }
-
+          
         // cliente       -  usuario->flutter 
         //------------------------------------
         // recepcion     -  controller     - UserController  - userController.php
@@ -79,8 +101,28 @@ class UsuarioDao{
         // domiciliario  -  dao            - this -          - usuario.php
     }
 
-    public function actualizar(){
-        
+    public function actualizar($user){
+        $db = new Db();
+        $sql = 'UPDATE natkandlo.usuarios
+        SET 
+            nombre_usuario = ?,
+            clave = ?
+        WHERE idusuario = ?;';
+        try{
+            $conn = $db->connect();
+            // ejecutar la consulta y recibir el estado 
+            $state = $conn->prepare($sql)->execute(
+                [
+                    $user->nombre_usuario,
+                    $user->clave,
+                    $user->idusuario
+                ]);
+            $user->idusuario=$conn->lastInsertId();
+            return $user;
+        }catch(Exception  $e){
+            $state = False;
+            return NULL;
+        }
     }
 
     public function borrar(){
