@@ -9,16 +9,20 @@ require __DIR__ . '../../model/design.php';
 class DesignController{
     private static function json_to_design(Request $request){
         $json =$request->getBody();
-        $design_data =  json_decode($json, TRUE);
+        $json_data =  json_decode($json, TRUE);
         $design = new Design();
-        $design->id_design =$design_data['id_design'];
-        $design->nombre_prenda =$design_data['nombre_prenda'];
-        $design->descripcion =$design_data['descripcion'];
-        $design->costo =$design_data['costo'];
-        $design->tiempo_creacion =$design_data['tiempo_creacion'];
-        $design->estado =$design_data['estado'];
-        $design->fecha_creacion =$design_data['fecha_creacion'];
-        $design->id_user =$design_data['id_user'];
+        $design->id_design          =$json_data['id_design'];
+        $design->nombre_prenda      =$json_data['nombre_prenda'];
+        $design->descripcion        =$json_data['descripcion'];
+        $design->costo              =$json_data['costo'];
+        $design->tiempo_creacion    =$json_data['tiempo_creacion'];
+        $design->estado             =$json_data['estado'];
+        $design->fecha_creacion     =$json_data['fecha_creacion'];
+        $design->id_user            =$json_data['id_user'];
+        $design->talla              =$json_data['talla'];
+        $design->tipo_prenda        =$json_data['tipo_prenda'];
+        $design->tipo_tela          =$json_data['tipo_tela'];
+        $design->color              =$json_data['color'];
         return $design;
     }
 
