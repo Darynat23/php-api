@@ -6,7 +6,7 @@ use Slim\Factory\AppFactory;
 
 // dependencias
 require __DIR__ . '/../vendor/autoload.php';
-
+error_reporting(E_ERROR | E_PARSE);
 
 
 $app = AppFactory::create();

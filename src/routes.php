@@ -6,9 +6,9 @@ use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
 
-require __DIR__ . './config/database.php';
-require __DIR__ . './controllers/userController.php';
-require __DIR__ . './controllers/designController.php';
+require 'config/database.php';
+require  'controllers/userController.php';
+require  'controllers/designController.php';
 
 $usuarioController = new UserController();
 $designController = new DesignController();

@@ -14,14 +14,4 @@ class Db{
     public function connect(){
         return new PDO($this->getPath() , $this->dbUser, $this->password);
     }
-
-
-    // public function select($id){
-    //     $sql = "SELECT * FROM users WHERE users.ID == $id"
-    // }
-
-    // $user.select(1)
-    // $user.delete(1)
-    // $user.update(1)
-    // $user.insert(1)
 }

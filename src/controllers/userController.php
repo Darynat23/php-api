@@ -13,11 +13,11 @@ class UserController{
         $user = new Usuario();
         $user->nombre_usuario = $user_data['nombre_usuario'];
         $user->clave = $user_data['clave'];
-        $user->idusuario = $user_data['idusuario'];
+        $user->nombres = $user_data['nombres'];
+        $user->apellidos = $user_data['apellidos'];
+        $user->correo = $user_data['correo'];
         return $user;
     }
-
-
 
     public function __invoke(Request $request, Response $response, $args){
         $response->getBody()->write("Hola");
@@ -28,7 +28,6 @@ class UserController{
         $user= self::json_to_user($request);
         $userdao = new UsuarioDao();
         $estado = $userdao->guardar($user);
-
         // retorna al usuario el estado de el guardado
         if($estado){
             $user_json = json_encode($estado);

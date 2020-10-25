@@ -24,7 +24,7 @@ class DesignController{
 
 
 
-    public static function __invoke(Request $request, Response $response, $args){
+    public function __invoke(Request $request, Response $response, $args){
         $params =$request->getQueryParams();
         $id_user = $params['id'];
         $designdao = new DesignDao();
@@ -36,8 +36,6 @@ class DesignController{
 
     public static function guardar(Request $request, Response $response, $args){
         $design= self::json_to_design($request);
-        // var_dump($design);
-        // die();
         $designdao = new DesignDao();
         $estado = $designdao->guardar($design);
 
