@@ -22,6 +22,10 @@ class Design {
     public $estado;
     public $fecha_creacion;
     public $id_user;
+    public $talla;
+    public $tipo_prenda;
+    public $tipo_tela;
+    public $color;
 }
 
 
@@ -32,14 +36,18 @@ class DesignDao{
 
     private function row_to_design($row){
         $design = new Design();
-        $design->id_design =$row['iddisenio'];
-        $design->nombre_prenda =$row['nombre'];
-        $design->descripcion =$row['descripcion'];
-        $design->costo =$row['costos'];
-        $design->tiempo_creacion =$row['tiempo_creacion'];
-        $design->estado =$row['estado'];
-        $design->fecha_creacion =$row['fecha_creacion'];
-        $design->id_user =$row['id_usuario'];
+        $design->id_design          =$row['id_design'];
+        $design->nombre_prenda      =$row['nombre_prenda'];
+        $design->descripcion        =$row['descripcion'];
+        $design->costo              =$row['costo'];
+        $design->tiempo_creacion    =$row['tiempo_creacion'];
+        $design->estado             =$row['estado'];
+        $design->fecha_creacion     =$row['fecha_creacion'];
+        $design->id_user            =$row['id_user'];
+        $design->talla              =$row['talla'];
+        $design->tipo_prenda        =$row['tipo_prenda'];
+        $design->tipo_tela          =$row['tipo_tela'];
+        $design->color              =$row['color'];
         return $design;
     }
 
@@ -92,9 +100,13 @@ class DesignDao{
             tiempo_creacion,
             estado,
             fecha_creacion,
+            talla,
+            color,
+            tipo_prenda,
+            tipo_tela,
             id_usuario
             )
-        VALUES (?,?,?,?,?,?,?);';
+        VALUES (?,?,?,?,?,?,?,?,?,?,?);';
         try{
             // conectarse a la base datos
             $conn = $db->connect();
@@ -107,6 +119,10 @@ class DesignDao{
                 $design->tiempo_creacion,
                 $design->estado,
                 $design->fecha_creacion,
+                $design->$talla,
+                $design->$color,
+                $design->$tipo_prenda,
+                $design->$tipo_tela,
                 $design->id_user
             ]);
             $design->id_design = $conn->lastInsertId();
