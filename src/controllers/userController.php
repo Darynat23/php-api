@@ -20,6 +20,11 @@ class UserController{
     }
 
     public function __invoke(Request $request, Response $response, $args){
+
+        if($_SESSION['user']){
+            $response->getBody()->write(true);
+            return $response;
+        }
         $response->getBody()->write("Hola");
         return $response;
     }
@@ -63,6 +68,7 @@ class UserController{
         $user = self::json_to_user($request);
         $userdao = new UsuarioDao();
         $user = $userdao->login($user);
+        $_SESSION['user'] = true;
 
         if($user){
             $json = json_encode($user);
